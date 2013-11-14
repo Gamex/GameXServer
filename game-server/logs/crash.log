@@ -1,0 +1,3 @@
+[2013-11-14 10:24:38.495] [INFO] crash-log - [32m[/Users/matakashi/Documents/Project/GameX_proj/GameXServer/game-server/node_modules/pomelo/lib/master/master.js] [39m[client],[pomelo_list_1384395878423],[1384395878495],[disconnect]
+[2013-11-14 10:30:13.662] [INFO] crash-log - [32m[/Users/matakashi/Documents/Project/GameX_proj/GameXServer/game-server/node_modules/pomelo/lib/master/master.js] [39m[client],[pomelo_list_1384396213608],[1384396213662],[disconnect]
+[2013-11-14 10:31:14.283] [INFO] crash-log - [32m[/Users/matakashi/Documents/Project/GameX_proj/GameXServer/game-server/node_modules/pomelo/lib/master/master.js] [39m[connector],[connector-server-1],[1384396274283],[disconnect]
