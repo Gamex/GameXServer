@@ -6,6 +6,28 @@ var pomelo = require('pomelo');
 var app = pomelo.createApp();
 app.set('name', 'GameXServer');
 
+// ----- ray
+// app configuration
+app.configure('production|development', 'connector', function(){
+              app.set('connectorConfig',
+                      {
+                      connector : pomelo.connectors.hybridconnector,
+                      heartbeat : 3,
+                      useDict : true,
+                      useProtobuf : true
+                      });
+              });
+
+app.configure('production|development', 'gate', function(){
+              app.set('connectorConfig',
+                      {
+                      connector : pomelo.connectors.hybridconnector,
+                      });
+              
+              });
+
+// end ray
+
 // start app
 app.start();
 
