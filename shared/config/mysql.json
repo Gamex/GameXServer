@@ -2,16 +2,16 @@
 	"development": {
 	 "host" : "127.0.0.1",
 		"port" : "3306",
-		"database" : "Pomelo",
-		"user" : "xy",
-		"password" : "dev"
+		"database" : "GameXDB",
+		"user" : "GameXServer",
+		"password" : "gamexserver"
 	},
 
 	"production": {
 	 "host" : "127.0.0.1",
 		"port" : "3306",
-		"database" : "Pomelo",
-		"user" : "xy",
-		"password" : "dev"
+		"database" : "GameXDB",
+		"user" : "GameXServer",
+		"password" : "gamexserver"
 	}
 }

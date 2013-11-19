@@ -1,4 +1,6 @@
 var pomelo = require('pomelo');
+var routeUtil = require('./app/util/routeUtil');
+var sync = require('pomelo-sync-plugin');
 
 /**
  * Init app for client.
@@ -6,7 +8,19 @@ var pomelo = require('pomelo');
 var app = pomelo.createApp();
 app.set('name', 'GameXServer');
 
-// ----- ray
+//app.route('auth', routeUtil.auth);
+
+app.loadConfig('mysql', app.getBase() + '/../shared/config/mysql.json');
+
+
+// Configure database
+app.configure('production|development', 'auth|connector|master', function() {
+              var dbclient = require('./app/dao/mysql/mysql').init(app);
+              app.set('dbclient', dbclient);
+              //app.load(pomelo.sync, {path:__dirname + '/app/dao/mapping', dbclient: dbclient});
+              app.use(sync, {sync: {path:__dirname + '/app/dao/mapping', dbclient: dbclient}});
+              });
+
 // app configuration
 app.configure('production|development', 'connector', function(){
               app.set('connectorConfig',
@@ -26,8 +40,11 @@ app.configure('production|development', 'gate', function(){
                       });
               
               });
-
-// end ray
+// Configure for auth server
+app.configure('production|development', 'auth', function() {
+              // load session congfigures
+              app.set('session', require('./config/session.json'));
+              });
 
 // start app
 app.start();
