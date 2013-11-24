@@ -1,6 +1,8 @@
 var tokenService = require('../../../../../shared/token');
 var userDao = require('../../../dao/userDao');
 var Code = require('../../../../../shared/code');
+var token = require('../../../../../shared/token');
+var async = require('async');
 
 var DEFAULT_SECRET = 'pomelo_session_secret';
 var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
@@ -25,7 +27,7 @@ var pro = Remote.prototype;
  * @param  {Function} cb
  * @return {Void}
  */
-pro.auth = function(msg, cb) {
+pro.auth = function(msg, callback) {
     
     var userName = msg.userName;
     var password = msg.password;
@@ -35,39 +37,46 @@ pro.auth = function(msg, cb) {
         return;
     }
     
-    userDao.getUserInfo(userName, password, function(err, res){
-                        if (err == null)
-                        {
-                            cb(null, Code.OK, res.uid);
-                            return;
-                        }
-                        else
-                        {
-                        cb(err);
-                        return;
-                        }
-                        })
-//	var res = tokenService.parse(token, this.secret);
-//	if(!res) {
-//		cb(null, Code.ENTRY.FA_TOKEN_ILLEGAL);
-//		return;
-//	}
-
-//	if(!checkExpire(res, this.expire)) {
-//		cb(null, Code.ENTRY.FA_TOKEN_EXPIRE);
-//		return;
-//	}
-
-//	userDao.getUserById(res.uid, function(err, user) {
-//		if(err) {
-//			cb(err);
-//			return;
-//		}
-//
-//		cb(null, Code.OK, user);
-//	});
-    
-//    cb(null, Code.FAIL);
+    var UserId;
+    async.waterfall([
+    	function(cb)
+    	{
+    		userDao.getUserInfo(userName, password, cb);
+    	},
+    	function(res, cb)
+    	{
+    		if (res.uid == -1)
+    		{
+    			// can't find the user
+    			callback(null, Code.ENTRY.FA_USER_NOT_EXIST);
+    		}
+    		else
+    		{
+	    		UserId = res.uid;
+	    		userDao.getToken(UserId, password, cb);
+    		}
+    	}
+    	],
+    	function(err, t)
+    	{
+           if (err == null)
+           {
+           		if (t === undefined)
+           		{
+           			callback(null, Code.ENTRY.FA_USER_ALREADY_LOGIN);
+           		}
+           		else
+           		{
+	               callback(null, Code.OK, UserId, t);
+           		}
+               return;
+           }
+           else
+           {
+	           callback(err);
+	           return;
+           }
+		});
 };
 
 /**

@@ -21,10 +21,10 @@ Handler.prototype.queryEntry = function(msg, session, next)
         return;
     }
     // check usename and password
-    this.app.rpc.auth.authRemote.auth(session, msg, function(err, code, uid){
+    this.app.rpc.auth.authRemote.auth(session, msg, function(err, code, uid, t){
                                       if (err != null || code != Code.OK)
                                       {
-                                          next(null, {code: 101});
+                                          next(null, {code: code});
                                           return;
                                       }
                                       if (!uid)
@@ -33,7 +33,7 @@ Handler.prototype.queryEntry = function(msg, session, next)
                                           return;
                                       }
                                       var res = dispatcher.dispatch(uid, connectors);
-                                      next(null, {code: Code.OK, host: res.host, port: res.clientPort});
+                                      next(null, {code: Code.OK, host: res.host, port: res.clientPort, token: t});
                                       });
     
 };

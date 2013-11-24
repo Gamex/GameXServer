@@ -8,37 +8,68 @@ var pomelo = require('pomelo');
 //var bagDao = require('./bagDao');
 //var fightskillDao = require('./fightskillDao');
 //var taskDao = require('./taskDao');
-//var async = require('async');
+var async = require('async');
 var utils = require('../util/utils');
 //var consts = require('../consts/consts');
+var token = require('../../../shared/token');
 
 var userDao = module.exports;
 
 /**
- * Get user data by username.
+ * Get user Info by username.
  * @param {String} username
  * @param {String} passwd
  * @param {function} cb
  */
 userDao.getUserInfo = function (username, passwd, cb) {
-	var sql = 'select * from	Users where userName = ?';
+	var sql = 'select * from Users where userName = ?';
 	var args = [username];
 
 	pomelo.app.get('dbclient').query(sql,args,function(err, res) {
 		if(err !== null) {
-                                     console.log(err);
-				utils.invokeCallback(cb, err, null);
+			utils.invokeCallback(cb, err, null);
 		} else {
+			console.log(res);
 			var userId = 0;
 			if (!!res && res.length === 1) {
 				var rs = res[0];
 				utils.invokeCallback(cb,null, rs);
 			} else {
-				utils.invokeCallback(cb, null, {uid:0, username: username});
+				utils.invokeCallback(cb, null, {uid:-1, username: username});
 			}
 		}
 	});
 };
+
+
+
+userDao.getToken = function(uid, pwd, callback)
+{
+	var t = token.create(uid, Date.now(), pwd);
+	
+	var dbc = pomelo.app.get('dbclient');
+	
+	sql = 'insert into OnlineUser (uid, token) values(?, ?)'
+	args = [uid, t];
+	dbc.query(sql, args, function(err, res)
+		{
+			if (err != null)
+			{
+				if (err.errno == 1062)		// user had logined!
+				{
+					utils.invokeCallback(callback, null);
+				}
+				else
+				{
+					utils.invokeCallback(callback, err);
+				}
+			}
+			else
+			{
+				utils.invokeCallback(callback, null, t);
+			}
+		});
+}
 
 ///**
 // * Get an user's all players by userId
