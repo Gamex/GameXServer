@@ -41,7 +41,7 @@ pro.auth = function(msg, callback) {
     async.waterfall([
     	function(cb)
     	{
-    		userDao.getUserInfo(userName, password, cb);
+    		userDao.getUserInfo(userName, cb);
     	},
     	function(res, cb)
     	{
@@ -52,8 +52,15 @@ pro.auth = function(msg, callback) {
     		}
     		else
     		{
-	    		UserId = res.uid;
-	    		userDao.getToken(UserId, password, cb);
+    			if (res.password == password)
+    			{
+		    		UserId = res.uid;
+		    		userDao.getToken(UserId, password, cb);
+	    		}
+	    		else
+	    		{
+	    			callback(null, Code.ENTRY.FA_USER_PWD_ERROR);
+	    		}
     		}
     	}
     	],

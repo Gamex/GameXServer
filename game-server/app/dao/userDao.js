@@ -21,7 +21,7 @@ var userDao = module.exports;
  * @param {String} passwd
  * @param {function} cb
  */
-userDao.getUserInfo = function (username, passwd, cb) {
+userDao.getUserInfo = function (username, cb) {
 	var sql = 'select * from Users where userName = ?';
 	var args = [username];
 
@@ -35,7 +35,7 @@ userDao.getUserInfo = function (username, passwd, cb) {
 				var rs = res[0];
 				utils.invokeCallback(cb,null, rs);
 			} else {
-				utils.invokeCallback(cb, null, {uid:-1, username: username});
+				utils.invokeCallback(cb, null, {uid:-1});
 			}
 		}
 	});
