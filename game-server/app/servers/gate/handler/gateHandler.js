@@ -12,7 +12,7 @@ var Handler = function(app) {
 	this.app = app;
 };
 
-Handler.prototype.queryEntry = function(msg, session, next)
+Handler.prototype.queryConnectorEntry = function(msg, session, next)
 {
     var connectors = this.app.getServersByType('connector');
     if(!connectors || connectors.length === 0)

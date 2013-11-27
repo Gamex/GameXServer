@@ -1,7 +1,5 @@
-var tokenService = require('../../../../../shared/token');
 var userDao = require('../../../dao/userDao');
 var Code = require('../../../../../shared/code');
-var token = require('../../../../../shared/token');
 var async = require('async');
 
 var DEFAULT_SECRET = 'pomelo_session_secret';
@@ -113,5 +111,19 @@ pro.kickAllUser = function(callback)
 		callback(null, r);
 	});
 };
+
+
+
+pro.checkToken = function(token, pwd, callback)
+{
+	userDao.checkToken(token, pwd, callback);
+};
+
+
+pro.userLeave = function(uid, callback)
+{
+	userDao.logout(uid, callback);
+};
+
 
 
