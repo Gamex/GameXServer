@@ -38,6 +38,7 @@ pro.auth = function(msg, callback) {
     }
     
     var UserId;
+    var Auth;
     async.waterfall([
     	function(cb)
     	{
@@ -55,7 +56,8 @@ pro.auth = function(msg, callback) {
     			if (res.password == password)
     			{
 		    		UserId = res.uid;
-		    		userDao.getToken(UserId, password, cb);
+		    		Auth = res.authority;
+		    		userDao.getToken(UserId, password, Auth, cb);
 	    		}
 	    		else
 	    		{
@@ -74,7 +76,7 @@ pro.auth = function(msg, callback) {
            		}
            		else
            		{
-	               callback(null, Code.OK, UserId, t);
+	               callback(null, Code.OK, UserId, t, Auth);
            		}
                return;
            }
@@ -101,3 +103,15 @@ var checkExpire = function(token, expire) {
 
 	return (Date.now() - token.timestamp) < expire;
 };
+
+
+
+pro.kickAllUser = function(callback)
+{
+	userDao.kickAllUser(function(err, r)
+	{
+		callback(null, r);
+	});
+};
+
+

@@ -12,6 +12,7 @@ var async = require('async');
 var utils = require('../util/utils');
 //var consts = require('../consts/consts');
 var token = require('../../../shared/token');
+var Code = require('../../../shared/code');
 
 var userDao = module.exports;
 
@@ -29,7 +30,6 @@ userDao.getUserInfo = function (username, cb) {
 		if(err !== null) {
 			utils.invokeCallback(cb, err, null);
 		} else {
-			console.log(res);
 			var userId = 0;
 			if (!!res && res.length === 1) {
 				var rs = res[0];
@@ -43,34 +43,56 @@ userDao.getUserInfo = function (username, cb) {
 
 
 
-userDao.getToken = function(uid, pwd, callback)
+userDao.getToken = function(uid, pwd, auth, callback)
 {
 	var t = token.create(uid, Date.now(), pwd);
 	
 	var dbc = pomelo.app.get('dbclient');
 	
-	sql = 'insert into OnlineUser (uid, token) values(?, ?)'
-	args = [uid, t];
+	sql = 'select addOnlineUser(?, ?, ?) as ret'
+	args = [uid, t, auth];
 	dbc.query(sql, args, function(err, res)
 		{
 			if (err != null)
 			{
-				if (err.errno == 1062)		// user had logined!
-				{
-					utils.invokeCallback(callback, null);
-				}
-				else
-				{
-					utils.invokeCallback(callback, err);
-				}
+				console.log(err);
+				utils.invokeCallback(callback, err);
 			}
 			else
 			{
-				utils.invokeCallback(callback, null, t);
+				if (res[0].ret == true)
+				{
+					utils.invokeCallback(callback, null, t);
+				}
+				else
+				{
+					utils.invokeCallback(callback, null);
+				}
 			}
 		});
 }
 
+
+
+userDao.kickAllUser = function(callback)
+{
+	var dbc = pomelo.app.get('dbclient');
+	
+	sql = 'call kickOnlineUsers';
+	args = []
+	dbc.query(sql, args, function(err, res)
+	{
+		if (err != null)
+		{
+			console.log(err);
+			utils.invokeCallback(callback, null, Code.FAIL);
+		}
+		else
+		{
+			utils.invokeCallback(callback, null, Code.OK);
+		}
+	});
+}
 ///**
 // * Get an user's all players by userId
 // * @param {Number} uid User Id.
