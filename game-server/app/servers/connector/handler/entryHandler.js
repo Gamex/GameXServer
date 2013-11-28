@@ -22,32 +22,27 @@ var pro = Handler.prototype;
  * @return {Void}
  */
 pro.entry = function(msg, session, next) {
-  	var token = msg.token, pwd = msg.password, self = this;
-
-	if(!token) {
-		next(new Error('invalid entry request: empty token'), {code: Code.FAIL});
-		return;
-	}
+  	var username = msg.userName, pwd = msg.password, self = this;
 
 	var uid, players, player;
 	async.waterfall([
 		function(cb) {
 			// auth token
-			self.app.rpc.auth.authRemote.checkToken(session, token, pwd, cb);
+			self.app.rpc.auth.authRemote.Login(session, username, pwd, cb);
 		}, function(code, uerId, cb) {
 			// query player info by user id
-			if(code !== Code.OK) {
+			if(code != Code.OK) {
 				next(null, {code: code});
 				return;
 			}
 
-			if(!uerId) {
+			if(uerId < 0) {
 				next(null, {code: Code.ENTRY.FA_USER_NOT_EXIST});
 				return;
 			}
 
 			uid = uerId;
-			self.app.get('sessionService').kick(uid, cb);
+			//self.app.get('sessionService').kick(uid, cb);
 			session.bind(uid, cb);
 		}, function(cb) {
 //			session.set('playername', player.name);
@@ -72,7 +67,7 @@ var onUserLeave = function (app, session, reason) {
 	if(!session || !session.uid) {
 		return;
 	}
-//	console.log('user leave: ' + session.uid);
+	console.log('user leave: ' + session.uid + ' resson: ');
 
 	app.rpc.auth.authRemote.userLeave(session, session.uid, function(err){
 		if (err != null)

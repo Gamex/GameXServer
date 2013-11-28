@@ -43,37 +43,6 @@ userDao.getUserInfo = function (username, cb) {
 
 
 
-userDao.getToken = function(uid, pwd, auth, callback)
-{
-	var t = token.create(uid, Date.now(), pwd);
-	
-	var dbc = pomelo.app.get('dbclient');
-	
-	sql = 'select addOnlineUser(?, ?, ?) as ret'
-	args = [uid, t, auth];
-	dbc.query(sql, args, function(err, res)
-		{
-			if (err != null)
-			{
-				console.log(err);
-				utils.invokeCallback(callback, err);
-			}
-			else
-			{
-				if (res[0].ret == true)
-				{
-					utils.invokeCallback(callback, null, t);
-				}
-				else
-				{
-					utils.invokeCallback(callback, null);
-				}
-			}
-		});
-};
-
-
-
 userDao.kickAllUser = function(callback)
 {
 	var dbc = pomelo.app.get('dbclient');
@@ -95,18 +64,11 @@ userDao.kickAllUser = function(callback)
 };
 
 
-userDao.checkToken = function(t, pwd, callback)
-{
-	var ret = token.parse(t, pwd);
-	if (ret === undefined)
-	{
-		utils.invokeCallback(callback, null, Code.FAIL);
-		return;
-	}
-	
+userDao.Login = function(un, pwd, callback)
+{	
 	var dbc = pomelo.app.get('dbclient');
-	sql = 'select checkToken(?, ?) as rt';
-	args = [ret.uid, t];
+	sql = 'select login(?, ?) as uid';
+	args = [un, pwd];
 	dbc.query(sql, args, function(err, res){
 		if (err != null)
 		{
@@ -115,9 +77,9 @@ userDao.checkToken = function(t, pwd, callback)
 		}
 		else
 		{
-			if (res[0].rt == true)
+			if (res[0].uid >= 0)
 			{
-				utils.invokeCallback(callback, null, Code.OK, ret.uid);
+				utils.invokeCallback(callback, null, Code.OK, res[0].uid);
 			}
 			else
 			{

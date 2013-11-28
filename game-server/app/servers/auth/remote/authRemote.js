@@ -34,56 +34,21 @@ pro.auth = function(msg, callback) {
         cb(null, Code.FAIL);
         return;
     }
-    
-    var UserId;
-    var Auth;
-    async.waterfall([
-    	function(cb)
+
+    userDao.getUserInfo(userName, function(err, res)
+    {
+    	if (err == null)
     	{
-    		userDao.getUserInfo(userName, cb);
-    	},
-    	function(res, cb)
-    	{
-    		if (res.uid == -1)
+    		if (res.password == password)
     		{
-    			// can't find the user
-    			callback(null, Code.ENTRY.FA_USER_NOT_EXIST);
-    		}
-    		else
-    		{
-    			if (res.password == password)
-    			{
-		    		UserId = res.uid;
-		    		Auth = res.authority;
-		    		userDao.getToken(UserId, password, Auth, cb);
-	    		}
-	    		else
-	    		{
-	    			callback(null, Code.ENTRY.FA_USER_PWD_ERROR);
-	    		}
+
+    			callback(null, Code.OK, res.uid);
+    			return;
     		}
     	}
-    	],
-    	function(err, t)
-    	{
-           if (err == null)
-           {
-           		if (t === undefined)
-           		{
-           			callback(null, Code.ENTRY.FA_USER_ALREADY_LOGIN);
-           		}
-           		else
-           		{
-	               callback(null, Code.OK, UserId, t, Auth);
-           		}
-               return;
-           }
-           else
-           {
-	           callback(err);
-	           return;
-           }
-		});
+    	
+    	callback(null, Code.ENTRY.FA_USER_NOT_EXIST);
+    });
 };
 
 /**
@@ -114,9 +79,9 @@ pro.kickAllUser = function(callback)
 
 
 
-pro.checkToken = function(token, pwd, callback)
+pro.Login = function(un, pwd, callback)
 {
-	userDao.checkToken(token, pwd, callback);
+	userDao.Login(un, pwd, callback);
 };
 
 
