@@ -97,9 +97,36 @@ userDao.kickAllUser = function(callback)
 
 userDao.checkToken = function(t, pwd, callback)
 {
-	// todo: check the token from db
 	var ret = token.parse(t, pwd);
-	utils.invokeCallback(callback, null, Code.OK, ret.uid);
+	if (ret === undefined)
+	{
+		utils.invokeCallback(callback, null, Code.FAIL);
+		return;
+	}
+	
+	var dbc = pomelo.app.get('dbclient');
+	sql = 'select checkToken(?, ?) as rt';
+	args = [ret.uid, t];
+	dbc.query(sql, args, function(err, res){
+		if (err != null)
+		{
+			console.log(err);
+			utils.invokeCallback(callback, null, Code.FAIL);
+		}
+		else
+		{
+			if (res[0].rt == true)
+			{
+				utils.invokeCallback(callback, null, Code.OK, ret.uid);
+			}
+			else
+			{
+				utils.invokeCallback(callback, null, Code.FAIL);
+			}
+		}
+	});
+	
+	
 };
 
 
