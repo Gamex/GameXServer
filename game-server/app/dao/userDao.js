@@ -67,7 +67,7 @@ userDao.kickAllUser = function(callback)
 userDao.Login = function(un, pwd, callback)
 {	
 	var dbc = pomelo.app.get('dbclient');
-	sql = 'select login(?, ?) as uid';
+	sql = 'call login(?, ?)';
 	args = [un, pwd];
 	dbc.query(sql, args, function(err, res){
 		if (err != null)
@@ -77,9 +77,10 @@ userDao.Login = function(un, pwd, callback)
 		}
 		else
 		{
-			if (res[0].uid >= 0)
+			uid = res[0][0].ret;
+			if (uid >= 0)
 			{
-				utils.invokeCallback(callback, null, Code.OK, res[0].uid);
+				utils.invokeCallback(callback, null, Code.OK, uid);
 			}
 			else
 			{
@@ -104,4 +105,40 @@ userDao.logout = function(uid, callback)
 		utils.invokeCallback(callback, err);
 	});
 };
+
+
+
+userDao.getPlayerInfo = function(uid, callback)
+{
+	var dbc = pomelo.app.get('dbclient');
+	sql = 'call getORcreatePlayerInfo(?)';
+	args = [uid];
+
+	dbc.query(sql, args, function(err, res)
+	{
+		if (err != null)
+		{
+			console.log(err);
+			utils.invokeCallback(callback, null, Code.FAIL);
+		}
+		else
+		{
+			player = res[0][0];
+
+//			if (uid >= 0)
+//			{
+//				utils.invokeCallback(callback, null, Code.OK, uid);
+//			}
+//			else
+//			{
+//				utils.invokeCallback(callback, null, Code.FAIL);
+//			}
+
+			utils.invokeCallback(callback, null, Code.OK, player);
+		}
+	});
+}
+
+
+
 

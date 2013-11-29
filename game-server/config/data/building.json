@@ -1,0 +1,58 @@
+{
+    "ControlCenter": {
+        "bid": 1,
+        "width": 4,
+        "height": 4,
+        "max_number": 1,
+        "max_level": 5,
+        "mineral": [
+                    500,
+                    600,
+                    700,
+                    800,
+                    900
+                    ],
+        "gas": [
+                500,
+                600,
+                700,
+                800,
+                900
+                ],
+        "build_time": [
+                       20,
+                       60,
+                       360,
+                       1080,
+                       2000
+                       ]
+    },
+    "MeetingHall": {
+        "bid": 2,
+        "width": 4,
+        "height": 4,
+        "max_number": 1,
+        "max_level": 5,
+        "mineral": [
+                    50,
+                    60,
+                    70,
+                    80,
+                    90
+                    ],
+        "gas": [
+                50,
+                60,
+                70,
+                80,
+                90
+                ],
+        "build_time": [
+                       10,
+                       30,
+                       100,
+                       200,
+                       300
+                       ]
+    }
+}

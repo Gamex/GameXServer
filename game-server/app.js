@@ -14,7 +14,7 @@ app.loadConfig('mysql', app.getBase() + '/../shared/config/mysql.json');
 
 
 // Configure database
-app.configure('production|development', 'auth|connector|master', function() {
+app.configure('production|development', 'auth|connector|master|gameplay', function() {
               var dbclient = require('./app/dao/mysql/mysql').init(app);
               app.set('dbclient', dbclient);
               //app.load(pomelo.sync, {path:__dirname + '/app/dao/mapping', dbclient: dbclient});
@@ -46,6 +46,12 @@ app.configure('production|development', 'auth', function() {
               app.set('session', require('./config/session.json'));
               });
 
+// Configure for auth server
+app.configure('production|development', 'gameplay', function() {
+              // load session congfigures
+              app.set('session', require('./config/session.json'));
+              });
+              
 // start app
 app.start();
 

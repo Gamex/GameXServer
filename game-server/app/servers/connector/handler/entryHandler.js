@@ -13,15 +13,9 @@ var Handler = function(app) {
 
 var pro = Handler.prototype;
 
-/**
- * New client entry chat server.
- *
- * @param  {Object}   msg     request message
- * @param  {Object}   session current session object
- * @param  {Function} next    next stemp callback
- * @return {Void}
- */
-pro.entry = function(msg, session, next) {
+
+
+pro.login = function(msg, session, next) {
   	var username = msg.userName, pwd = msg.password, self = this;
 
 	var uid, players, player;
