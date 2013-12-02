@@ -9,6 +9,7 @@ var app = pomelo.createApp();
 app.set('name', 'GameXServer');
 
 //app.route('auth', routeUtil.auth);
+//app.route('gameplay', routeUtil.gameplay);
 
 app.loadConfig('mysql', app.getBase() + '/../shared/config/mysql.json');
 
@@ -50,6 +51,8 @@ app.configure('production|development', 'auth', function() {
 app.configure('production|development', 'gameplay', function() {
               // load session congfigures
               app.set('session', require('./config/session.json'));
+              
+              app.filter(pomelo.filters.serial());
               });
               
 // start app

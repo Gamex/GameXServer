@@ -61,7 +61,7 @@ var onUserLeave = function (app, session, reason) {
 	if(!session || !session.uid) {
 		return;
 	}
-	console.log('user leave: ' + session.uid + ' resson: ');
+	console.log('user leave: ' + session.uid + ' resson: ' + reason);
 
 	app.rpc.auth.authRemote.userLeave(session, session.uid, function(err){
 		if (err != null)
@@ -69,6 +69,36 @@ var onUserLeave = function (app, session, reason) {
 			console.log(err);
 		}
 		});
+	
+	pid = session.get('playerId');
+	app.rpc.gameplay.gameplayRemote.playerLeave(session, pid, null);
 };
+
+
+
+pro.getPlayerInfo = function(msg, session, next)
+{
+	var self = this;
+	if(!session || !session.uid) {
+		next(null, {code: Code.FA_GAMEPLAY_NOT_LOGIN});
+		return;
+	}
+
+	self.app.rpc.gameplay.gameplayRemote.getPlayerInfo(session, session.uid, function(err, pif)
+	{
+		if (err != null)
+		{
+			console.log(err);
+			next(null, {code: Code.FAIL});
+			return;
+		}
+		
+		session.set('playerId', pif.pid);
+		session.pushAll(null);
+		
+		next(null, {code: Code.OK, player: pif});
+	});
+};
+
 
 

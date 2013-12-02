@@ -119,7 +119,7 @@ userDao.getPlayerInfo = function(uid, callback)
 		if (err != null)
 		{
 			console.log(err);
-			utils.invokeCallback(callback, null, Code.FAIL);
+			utils.invokeCallback(callback, err);
 		}
 		else
 		{
