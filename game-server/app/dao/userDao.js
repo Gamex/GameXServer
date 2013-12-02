@@ -22,20 +22,22 @@ var userDao = module.exports;
  * @param {String} passwd
  * @param {function} cb
  */
-userDao.getUserInfo = function (username, cb) {
+userDao.getUserInfo = function(username, cb) {
 	var sql = 'select * from Users where userName = ?';
 	var args = [username];
 
-	pomelo.app.get('dbclient').query(sql,args,function(err, res) {
-		if(err !== null) {
+	pomelo.app.get('dbclient').query(sql, args, function(err, res) {
+		if (err !== null) {
 			utils.invokeCallback(cb, err, null);
 		} else {
 			var userId = 0;
-			if (!!res && res.length === 1) {
+			if ( !! res && res.length === 1) {
 				var rs = res[0];
-				utils.invokeCallback(cb,null, rs);
+				utils.invokeCallback(cb, null, rs);
 			} else {
-				utils.invokeCallback(cb, null, {uid:-1});
+				utils.invokeCallback(cb, null, {
+					uid: -1
+				});
 			}
 		}
 	});
@@ -43,102 +45,79 @@ userDao.getUserInfo = function (username, cb) {
 
 
 
-userDao.kickAllUser = function(callback)
-{
+userDao.kickAllUser = function(callback) {
 	var dbc = pomelo.app.get('dbclient');
-	
+
 	sql = 'call kickOnlineUsers';
 	args = []
-	dbc.query(sql, args, function(err, res)
-	{
-		if (err != null)
-		{
+	dbc.query(sql, args, function(err, res) {
+		if (err != null) {
 			console.log(err);
 			utils.invokeCallback(callback, null, Code.FAIL);
-		}
-		else
-		{
+		} else {
 			utils.invokeCallback(callback, null, Code.OK);
 		}
 	});
 };
 
 
-userDao.Login = function(un, pwd, callback)
-{	
+userDao.Login = function(un, pwd, callback) {
 	var dbc = pomelo.app.get('dbclient');
 	sql = 'call login(?, ?)';
 	args = [un, pwd];
-	dbc.query(sql, args, function(err, res){
-		if (err != null)
-		{
+	dbc.query(sql, args, function(err, res) {
+		if (err != null) {
 			console.log(err);
 			utils.invokeCallback(callback, null, Code.FAIL);
-		}
-		else
-		{
+		} else {
 			uid = res[0][0].ret;
-			if (uid >= 0)
-			{
+			if (uid >= 0) {
 				utils.invokeCallback(callback, null, Code.OK, uid);
-			}
-			else
-			{
+			} else {
 				utils.invokeCallback(callback, null, Code.FAIL);
 			}
 		}
 	});
-	
-	
+
+
 };
 
 
 
-userDao.logout = function(uid, callback)
-{
+userDao.logout = function(uid, callback) {
 	var dbc = pomelo.app.get('dbclient');
 	sql = 'delete from OnlineUser where uid = ?'
 	args = [uid];
-	
-	dbc.query(sql, args, function(err, res)
-	{
+
+	dbc.query(sql, args, function(err, res) {
 		utils.invokeCallback(callback, err);
 	});
 };
 
 
 
-userDao.getPlayerInfo = function(uid, callback)
-{
+userDao.getPlayerInfo = function(uid, callback) {
 	var dbc = pomelo.app.get('dbclient');
 	sql = 'call getORcreatePlayerInfo(?)';
 	args = [uid];
 
-	dbc.query(sql, args, function(err, res)
-	{
-		if (err != null)
-		{
+	dbc.query(sql, args, function(err, res) {
+		if (err != null) {
 			console.log(err);
 			utils.invokeCallback(callback, err);
-		}
-		else
-		{
+		} else {
 			player = res[0][0];
 
-//			if (uid >= 0)
-//			{
-//				utils.invokeCallback(callback, null, Code.OK, uid);
-//			}
-//			else
-//			{
-//				utils.invokeCallback(callback, null, Code.FAIL);
-//			}
+			// if (uid >= 0)
+			// {
+			// 	utils.invokeCallback(callback, null, Code.OK, uid);
+			// }
+			// else
+			// {
+			// 	utils.invokeCallback(callback, null, Code.FAIL);
+			// }
 
 			utils.invokeCallback(callback, null, Code.OK, player);
 		}
 	});
 }
-
-
-
-

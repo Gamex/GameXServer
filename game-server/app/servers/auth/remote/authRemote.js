@@ -3,7 +3,7 @@ var Code = require('../../../../../shared/code');
 var async = require('async');
 
 var DEFAULT_SECRET = 'pomelo_session_secret';
-var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000;	// default session expire time: 6 hours
+var DEFAULT_EXPIRE = 6 * 60 * 60 * 1000; // default session expire time: 6 hours
 
 module.exports = function(app) {
 	return new Remote(app);
@@ -26,29 +26,25 @@ var pro = Remote.prototype;
  * @return {Void}
  */
 pro.auth = function(msg, callback) {
-    
-    var userName = msg.userName;
-    var password = msg.password;
-    if (!userName || !password)
-    {
-        cb(null, Code.FAIL);
-        return;
-    }
 
-    userDao.getUserInfo(userName, function(err, res)
-    {
-    	if (err == null)
-    	{
-    		if (res.password == password)
-    		{
+	var userName = msg.userName;
+	var password = msg.password;
+	if (!userName || !password) {
+		cb(null, Code.FAIL);
+		return;
+	}
 
-    			callback(null, Code.OK, res.uid);
-    			return;
-    		}
-    	}
-    	
-    	callback(null, Code.ENTRY.FA_USER_NOT_EXIST);
-    });
+	userDao.getUserInfo(userName, function(err, res) {
+		if (err == null) {
+			if (res.password == password) {
+
+				callback(null, Code.OK, res.uid);
+				return;
+			}
+		}
+
+		callback(null, Code.ENTRY.FA_USER_NOT_EXIST);
+	});
 };
 
 /**
@@ -59,7 +55,7 @@ pro.auth = function(msg, callback) {
  * @return {Boolean}        true for not expire and false for expire
  */
 var checkExpire = function(token, expire) {
-	if(expire < 0) {
+	if (expire < 0) {
 		// negative expire means never expire
 		return true;
 	}
@@ -69,26 +65,19 @@ var checkExpire = function(token, expire) {
 
 
 
-pro.kickAllUser = function(callback)
-{
-	userDao.kickAllUser(function(err, r)
-	{
+pro.kickAllUser = function(callback) {
+	userDao.kickAllUser(function(err, r) {
 		callback(null, r);
 	});
 };
 
 
 
-pro.Login = function(un, pwd, callback)
-{
+pro.Login = function(un, pwd, callback) {
 	userDao.Login(un, pwd, callback);
 };
 
 
-pro.userLeave = function(uid, callback)
-{
+pro.userLeave = function(uid, callback) {
 	userDao.logout(uid, callback);
 };
-
-
-

@@ -5,15 +5,13 @@ var exp = module.exports;
 
 var players = {};
 
-exp.createPlayer = function(opt)
-{
-	if (players[opt.pid])
-	{
+exp.createPlayer = function(opt) {
+	if (players[opt.pid]) {
 		return false;
 	}
-	
+
 	p = new Player(opt);
-	
+
 	players[p.pid] = p
 
 	return true;
@@ -21,14 +19,12 @@ exp.createPlayer = function(opt)
 
 
 
-exp.getPlayer = function(pid)
-{
+exp.getPlayer = function(pid) {
 	return players[pid];
 }
 
 
-exp.removePlayer = function(pid)
-{
+exp.removePlayer = function(pid) {
 	if (!players[pid]) return false;
 	delete player[pid];
 
