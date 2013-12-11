@@ -121,3 +121,21 @@ userDao.getPlayerInfo = function(uid, callback) {
 		}
 	});
 }
+
+
+
+userDao.getHomeInfo = function(pid, callback)
+{
+    var dbc = pomelo.app.get('dbclient');
+    sql = 'select * from Home where pid = ?';
+    args = [pid];
+
+    dbc.query(sql, args, function(err, res) {
+        if (err != null) {
+            console.log(err);
+            utils.invokeCallback(callback, err);
+        } else {
+            utils.invokeCallback(callback, null, res);
+        }
+    });
+}

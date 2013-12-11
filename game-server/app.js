@@ -1,6 +1,7 @@
 var pomelo = require('pomelo');
 var routeUtil = require('./app/util/routeUtil');
 var sync = require('pomelo-sync-plugin');
+var connectorFilter = require('./app/servers/connector/filter/connectorFilter');
 
 /**
  * Init app for client.
@@ -13,7 +14,6 @@ app.set('name', 'GameXServer');
 
 app.loadConfig('mysql', app.getBase() + '/../shared/config/mysql.json');
 
-
 // Configure database
 app.configure('production|development', 'auth|connector|master|gameplay', function() {
               var dbclient = require('./app/dao/mysql/mysql').init(app);
@@ -21,9 +21,9 @@ app.configure('production|development', 'auth|connector|master|gameplay', functi
               //app.load(pomelo.sync, {path:__dirname + '/app/dao/mapping', dbclient: dbclient});
               app.use(sync, {sync: {path:__dirname + '/app/dao/mapping', dbclient: dbclient}});
               });
-
 // app configuration
 app.configure('production|development', 'connector', function(){
+    app.before(connectorFilter());
               app.set('connectorConfig',
                       {
                       connector : pomelo.connectors.hybridconnector,
@@ -53,7 +53,8 @@ app.configure('production|development', 'gameplay', function() {
               app.set('session', require('./config/session.json'));
               
               app.filter(pomelo.filters.serial());
-              });
+
+});
               
 // start app
 app.start();
@@ -61,3 +62,4 @@ app.start();
 process.on('uncaughtException', function (err) {
   console.error(' Caught exception: ' + err.stack);
 });
+

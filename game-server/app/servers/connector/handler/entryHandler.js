@@ -8,7 +8,19 @@ module.exports = function(app) {
 
 var Handler = function(app) {
 	this.app = app;
+//    app.set('errorHandler', EH);      // error handler for next(new Error(''));
 };
+
+
+var EH = function(err, msg, resp, session, next)
+{
+    console.log(session.__sessionService__.sessions);
+    var uid = session.uid;
+    session.kick(uid, null);
+//    session.__sessionService__.app.rpc.connector.connectorRemote.kickUser(session, null);
+    next(null, {code: Code.FAIL});
+};
+
 
 
 var pro = Handler.prototype;
@@ -114,3 +126,4 @@ pro.getPlayerInfo = function(msg, session, next) {
 		});
 	});
 };
+

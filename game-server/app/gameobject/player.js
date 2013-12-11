@@ -1,6 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
+var HOME_MAP_WIDTH = 100;
+var HOME_MAP_HEIGHT = 100;
 
 var Player = function(opts) {
 	EventEmitter.call(this);
