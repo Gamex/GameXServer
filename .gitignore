@@ -2,4 +2,4 @@
 .DS_Store
 
 *.log
-game-server/log
+game-server/logs

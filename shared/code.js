@@ -21,7 +21,22 @@ module.exports = {
 		FA_USER_NOT_ONLINE: 	3004 
 	},
 	
+	UNIT_STATE:{
+		US_NORMAL: 				0,
+		US_BUILDING: 			1,
+		US_READY: 				2 
+	},
+	
+
 	GAMEPLAY: {
 		FA_GAMEPLAY_NOT_LOGIN:	5001,
+		
+		HOME:{
+			FA_BUILD_NO_MONEY : 10001,
+			FA_BUILD_NO_SPACE : 10002,
+			FA_BUILD_WRONG_NAME : 10003,
+            FA_REMOVE_WRONG_PARAM : 10004,
+            FA_MOVE_NO_SPACE : 10005
+		}
 	}
 };

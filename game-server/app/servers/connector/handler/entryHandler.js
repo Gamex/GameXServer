@@ -8,6 +8,7 @@ module.exports = function(app) {
 
 var Handler = function(app) {
 	this.app = app;
+
 //    app.set('errorHandler', EH);      // error handler for next(new Error(''));
 };
 
@@ -25,20 +26,24 @@ var EH = function(err, msg, resp, session, next)
 
 var pro = Handler.prototype;
 
-
+var foo = function(cb)
+{
+    cb();
+}
 
 pro.login = function(msg, session, next) {
+
 	var username = msg.userName,
 		pwd = msg.password,
 		self = this;
 
-	var uid, players, player;
+	var uid, auth, players, player;
 	async.waterfall([
 		function(cb) {
 			// auth token
 			self.app.rpc.auth.authRemote.Login(session, username, pwd, cb);
 		},
-		function(code, uerId, cb) {
+		function(code, userId, authority, cb) {
 			// query player info by user id
 			if (code != Code.OK) {
 				next(null, {
@@ -47,15 +52,17 @@ pro.login = function(msg, session, next) {
 				return;
 			}
 
-			if (uerId < 0) {
+			if (userId < 0) {
 				next(null, {
 					code: Code.ENTRY.FA_USER_NOT_EXIST
 				});
 				return;
 			}
 
-			uid = uerId;
+			uid = userId;
+            auth = authority;
 			//self.app.get('sessionService').kick(uid, cb);
+            session.set('authority', auth);
 			session.bind(uid, cb);
 		},
 		function(cb) {

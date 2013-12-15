@@ -26,7 +26,7 @@ exp.getPlayer = function(pid) {
 
 exp.removePlayer = function(pid) {
 	if (!players[pid]) return false;
-	delete player[pid];
+	delete players[pid];
 
 	return true;
 }

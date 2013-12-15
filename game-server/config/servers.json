@@ -6,8 +6,7 @@
                 "host": "127.0.0.1",
                 "port": 3150,
                 "clientPort": 3010,
-                "frontend": true,
-                "args": "--debug=32312"
+                "frontend": true
             }
         ],
         "gate": [
@@ -29,7 +28,8 @@
             {
                 "id": "gameplay-server-1",
                 "host": "127.0.0.1",
-                "port": 4000
+                "port": 4000,
+                "args": "--debug=32312"
             }
         ]
     },
